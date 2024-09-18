@@ -1,8 +1,33 @@
 {% extends "layout/_template.njk" %}
-{%
-  set pageConfig = {
+
+{% from "components/image/_macro.njk" import onsImage %}
+{% from "components/card/_macro.njk" import onsCard %}
+{% from "components/textarea/_macro.njk" import onsTextarea %}
+{% from "components/button/_macro.njk" import onsButton %}
+{% from "components/panel/_macro.njk" import onsPanel %}
+{% from "components/list/_macro.njk" import onsList %}
+{% from "components/label/_macro.njk" import onsLabel %}
+{% from "components/select/_macro.njk" import onsSelect %}
+
+{% set pageConfig = {
       "header": {
-          "title": "Service name"
+          "title": "GitHub User Dashboard",
+          "description": "A dashboard to view your GitHub profile",
+          "serviceLinks": {
+            "id": "service-links-internal",
+            "ariaLabel": 'Services menu',
+            "ariaListLabel": 'Menu',
+            "toggleServicesButton": {
+                "text": 'Account',
+                "ariaLabel": 'Toggle services menu'
+            },
+            "itemsList": [
+                {
+                    "text": user_info.login,
+                    "iconType": 'person'
+                }
+            ]
+        }
       },
       "footer": {
           "OGLLink": {
@@ -11,8 +36,49 @@
               "post": ", except where otherwise stated"
           }
       }
-  }
-%}
+  } %}
+
 {% block main %}
-  <h1>{{ param }}</h1>
+    {% if error_message %}
+        {% call onsPanel({
+            "title": 'There was a problem with your submission',
+            "variant": 'error'
+        }) %}
+        {{ onsList({
+            "element": 'ol',
+            "itemsList": [
+                {
+                    "text": error_message
+                }
+            ]
+        }) }}
+        {% endcall %}
+    {% endif %}
+    
+    {{ onsImage({
+        "image": {
+            "smallSrc": user_info.avatar_url,
+            "largeSrc": user_info.avatar_url
+        }
+    }) }}
+
+    {{ onsCard({
+        "id": 'user-info',
+        "textId": 'text',
+        "title": user_info.name,
+        "url": "https://github.com/" + user_info.login + "#name"
+    }) }}
+
+    <p>Followers: {{ user_info.followers }} | Following: {{ user_info.following }}</p>
+    <p>Public repos: {{ user_info.public_repos }}</p>
+
+    <!-- Bio section within a card -->
+    {{ onsCard({
+        "id": "bio-card",
+        "textId": "bio-text",
+        "title": "Your Bio",
+        "url": "https://github.com/" + user_info.login + "#bio"
+    }) }}
+        <p id="bioText">{{ user_info.bio }}</p>
+        
 {% endblock %}

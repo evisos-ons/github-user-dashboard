@@ -1,7 +1,9 @@
-{
-  'plugins': ['prettier-plugin-jinja-template'],
-  'singleQuote': true,
-  'printWidth': 140,
-  'trailingComma': all,
-  'overrides': [{ 'files': '*.html', 'options': { 'parser': 'jinja-template' } }],
-}
+plugins:
+  - prettier-plugin-nunjucks-template
+singleQuote: true
+printWidth: 140
+trailingComma: all
+overrides:
+  - files: '*.html'
+    options:
+      parser: 'jinja-template'
