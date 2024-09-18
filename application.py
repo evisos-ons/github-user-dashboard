@@ -37,7 +37,7 @@ def hello_world():
             followers = [follower["login"] for follower in followers_data]
         else:
             followers = {"error": f"Failed to fetch followers, status code: {followers_response.status_code}"}
-    
+
         # Fetch followers
         repos_response = requests.get("https://api.github.com/users/evisos-ons/repos", headers=headers)
         if repos_response.status_code == 200:
@@ -45,14 +45,15 @@ def hello_world():
             for repo in repos_data:
                 repo_info = {
                     "id": repo["id"],
-                    "full_name": repo["full_name"],
+                    "name": repo["name"],
                     "private": repo["private"],
                     "description": repo["description"],
-                    "fork": repo["fork"]
+                    "fork": repo["fork"],
+                    "archived": repo["archived"]
                 }
                 repos.append(repo_info)
         else:
-            repos = {"error": f"Failed to fetch repositories, status code: {repos_response.status_code}"} 
+            repos = {"error": f"Failed to fetch repositories, status code: {repos_response.status_code}"}
             user_info = {"error": "GitHub token not found in environment variables."}
 
     return render_template(
@@ -71,7 +72,6 @@ def save_field():
     field = request.form.get("field")
     new_value = request.form.get("value")
     github_token = os.getenv("GITHUB_TOKEN")
-    print(field, new_value, request.form)
 
     if not github_token:
         print("GitHub token not found in environment variables.")
@@ -99,8 +99,36 @@ def save_field():
         return redirect(url_for("hello_world"))
     else:
         # Handle error
-        print(f"Failed to update {field}, status code: {response.status_code}")
         return redirect(url_for("hello_world", error=f"Failed to update {field}"))
+
+
+@app.route("/archiveRepo", methods=["POST"])
+def archive_repo():
+    repo = request.form.get("repoName")
+    login = request.form.get("userName")
+    archived = request.form.get("archived")
+
+    github_token = os.getenv("GITHUB_TOKEN")
+
+    if not github_token:
+        print("GitHub token not found in environment variables.")
+        return redirect(url_for("hello_world", error="GitHub token not found"))
+
+    headers = {
+        "Authorization": f"token {github_token}",
+        "Content-Type": "application/json",
+    }
+    data = {"archived": not bool(archived)}
+
+    response = requests.patch(f"https://api.github.com/repos/{login}/{repo}", headers=headers, json=data)
+
+    if response.status_code == 200:
+        return redirect(url_for("hello_world"))
+    else:
+        # Handle error
+        print(f"Failed to update archive, status code: {response.status_code}")
+        return redirect(url_for("hello_world", error=f"Failed to archive repository"))
+
 
 
 if __name__ == "__main__":

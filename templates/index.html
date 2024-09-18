@@ -165,72 +165,105 @@
     }) }}
         <!-- Placeholder for dynamic input -->
         <br>
-        <div id="dynamicInput" class="ons-card"></div>
-        <br>
-            {{ onsButton({
+            <div id="dynamicInput" class="ons-card"></div>
+            <br>
+                <div id="submitButton" style="display:none">
+                    {{ onsButton({
         "text": "Submit Changes",
         "type": "submit"
     }) }}
-        </form>
-        <br>
-        <!-- Repos table -->
-        {{ onsCard({
+                </div>
+            </form>
+            <br>
+                <!-- Repos table -->
+                {{ onsCard({
             "id": "repos-card",
             "textId": "repos-text",
             "title": "My Repositories",
             "url": "https://github.com/" + user_info.login + "?tab=repositories"
         }) }}
-        <table id="basic-table" class="ons-table ons-table--">
-            <thead class="ons-table__head">
-                <tr class="ons-table__row">
-                    <th scope="col" class="ons-table__header">
-                        <span class="ons-table__header-text">Repository Name</span>
-                    </th>
-                    <th scope="col" class="ons-table__header">
-                        <span class="ons-table__header-text">Description</span>
-                    </th>
-                    <th scope="col" class="ons-table__header">
-                        <span class="ons-table__header-text">Private</span>
-                    </th>
-                    <th scope="col" class="ons-table__header">
-                        <span class="ons-table__header-text">Forked</span>
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="ons-table__body">
-                {% for repo in repos %}
-                    <tr class="ons-table__row">
-                        <td class="ons-table__cell">
-                            <a href="https://github.com/{{repo.full_name}}" target="_blank" class="ons-external-link__text">
-                                {{ repo.full_name }}
-                            </a>
-                        </td>
-                        <td class="ons-table__cell">
-                            {{ repo.description }}
-                        </td>
-                        <td class="ons-table__cell">
-                            {{ repo.private }}
-                        </td>
-                        <td class="ons-table__cell">
-                            {{ repo.fork }}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <script>
-            document.getElementById('fieldSelect').addEventListener('change', function () {
-                var selectedField = this.value;
-                var dynamicInput = document.getElementById('dynamicInput');
-                var userInfo = {{ user_info | tojson | safe }};
-                let preExistingValue = userInfo[selectedField]
-                // Clear previous input
-                dynamicInput.innerHTML = '';
-                // Use a template literal for easier HTML insertion
-                let inputHTML = '';
-                // Determine the type of input based on the selected field
-                switch (selectedField) {
-                    case 'hireable': inputHTML = `
+                <table id="basic-table" class="ons-table ons-table--">
+                    <thead class="ons-table__head">
+                        <tr class="ons-table__row">
+                            <th scope="col" class="ons-table__header">
+                                <span class="ons-table__header-text">Repository Name</span>
+                            </th>
+                            <th scope="col" class="ons-table__header">
+                                <span class="ons-table__header-text">Description</span>
+                            </th>
+                            <th scope="col" class="ons-table__header">
+                                <span class="ons-table__header-text">Private</span>
+                            </th>
+                            <th scope="col" class="ons-table__header">
+                                <span class="ons-table__header-text">Forked</span>
+                            </th>
+                            <th scope="col" class="ons-table__header">
+                                <span class="ons-table__header-text">Archive</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="ons-table__body">
+                        {% for repo in repos %}
+                            <tr class="ons-table__row">
+                                <td class="ons-table__cell">
+                                    <a href="https://github.com/{{ user_info.login }}/{{ repo.name }}" target="_blank" class="ons-external-link__text">
+                                        {{ repo.name }}
+                                    </a>
+                                </td>
+                                <td class="ons-table__cell">
+                                    {{ repo.description }}
+                                </td>
+                                <td class="ons-table__cell">
+                                    {{ repo.private }}
+                                </td>
+                                <td class="ons-table__cell">
+                                    {{ repo.fork }}
+                                </td>
+                                <td class="ons-table__cell">
+                                    {% if repo.archived %}
+                                        <form action="/archiveRepo" method="post">
+                                            <input type="hidden" name="repoName" value="{{ repo.name }}">
+                                            <input type="hidden" name="userName" value="{{ user_info.login }}">
+                                            {{ onsButton({
+                                                "text": "Unarchive",
+                                                "type": "submit"
+                                            }) }}
+                                            <input type="hidden" name="archived" value="{{repo.archived}}">
+                                        </form>
+                                    {% else %}
+                                        <form action="/archiveRepo" method="post">
+                                            <input type="hidden" name="repoName" value="{{ repo.name }}">
+                                            <input type="hidden" name="userName" value="{{ user_info.login }}">
+                                            {{ onsButton({
+                                                "text": "Archive",
+                                                "type": "submit"
+                                            }) }}
+                                            <input type="hidden" name="archived" value="{{repo.archived}}">
+                                        </form>
+                                    {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <script>
+                            document.getElementById('fieldSelect').addEventListener('change', function () {
+                                var selectedField = this.value;
+                                var dynamicInput = document.getElementById('dynamicInput');
+                                var userInfo = {{ user_info | tojson | safe }};
+                                let preExistingValue = userInfo[selectedField]
+                                // Clear previous input
+                                dynamicInput.innerHTML = '';
+                                var submitButton = document.getElementById('submitButton');
+                                let inputHTML = '';
+                                if (selectedField) {
+                                    submitButton.style.display = 'block';
+                                } else {
+                                    submitButton.style.display = 'none';
+                                }
+                                // Determine the type of input based on the selected field
+                                switch (selectedField) {
+                                    case 'hireable': inputHTML = `
                 {{ onsSelect({
                     "id": "valueSelect",
                     "name": "value",
@@ -244,8 +277,8 @@
                     ]
                 }) }}
             `;
-                        break;
-                    case 'bio': inputHTML = `
+                                        break;
+                                    case 'bio': inputHTML = `
                 {{ onsTextarea({
                     "id": "valueTextarea",
                     "name": "value",
@@ -257,8 +290,8 @@
                     "value": "${preExistingValue}" 
                 }) }}
             `;
-                        break;
-                    default: inputHTML = `
+                                        break;
+                                    default: inputHTML = `
                 {{ onsInput({
                     "id": "valueInput",
                     "name": "value",
@@ -269,10 +302,11 @@
                     "value": "${preExistingValue}"
                 }) }}
             `;
-                        break;
-                }
-                // Inject the generated HTML into the dynamic input area
-                dynamicInput.innerHTML = inputHTML;
-            });
-        </script>
-    {% endblock %}
+                                        break;
+                                }
+                                // Inject the generated HTML into the dynamic input area
+                                dynamicInput.innerHTML = inputHTML;
+                            });
+                        </script>
+                    {% endblock %}
+                </tbody>

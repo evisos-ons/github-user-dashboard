@@ -36,28 +36,37 @@ Login to GitHub.
 
 Go to [github.com/settings](https://github.com/settings/tokens?type=beta).
 
+Generate new token and enable these **repository permissions**.
+
+*Note: The token must have these scopes and access for the app to work.*
+
+| Scope          | Access        |
+| :--------      | :-------      |
+| Administration      | Read and write     |
+
 Generate new token and enable these **account permissions**.
 
 *Note: The token must have these scopes and access for the app to work.*
 
 | Scope          | Access        |
 | :--------      | :-------      |
-| Email addresses| Read-only     |
 | Followers      | Read-only     |
 | Profile        | Read and write|
 | Starring       | Read and write|
 
-Once you have your token it should look something like this:
-
-`github_pat_X_LONG_STRING`
+Once you have your token it should look something like this: `github_pat_X_LONG_STRING`
 
 You can now add this to your environment by using the command:
 
-```make add token=<your_token>```
+```
+make add token=<your_token>
+```
 
 *If that doesn't work, try this:*
 
-```export GITHUB_TOKEN=<your_token>```
+```
+export GITHUB_TOKEN=<your_token>
+```
 
 Now you can run your application.
 

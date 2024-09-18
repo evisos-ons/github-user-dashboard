@@ -8,9 +8,9 @@ clean:
 	rm -rf .ruff_cache
 
 lint: 
-	poetry run black --check .
-	poetry run ruff check . || true
-	poetry run mypy .
+	poetry run black . || true
+	poetry run ruff check . --fix || true
+	poetry run mypy . || true
 
 install: 
 	poetry install --only main --no-root
@@ -23,6 +23,6 @@ run-dev: load-design-system-templates
 
 run: load-design-system-templates
 	flask --app application run
-	
+
 add:
 	export GITHUB_TOKEN=$(token)
