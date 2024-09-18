@@ -154,7 +154,6 @@
         "options": [
             { "value": "", "text": "Select an option", "disabled": true, "selected": true },
             { "value": "name", "text": "Name" },
-            { "value": "email", "text": "Email" },
             { "value": "blog", "text": "Blog URL" },
             { "value": "twitter_username", "text": "Twitter Username" },
             { "value": "company", "text": "Company" },
@@ -191,12 +190,12 @@
                             <th scope="col" class="ons-table__header">
                                 <span class="ons-table__header-text">Description</span>
                             </th>
-                            <th scope="col" class="ons-table__header">
+                            {# <th scope="col" class="ons-table__header">
                                 <span class="ons-table__header-text">Private</span>
                             </th>
                             <th scope="col" class="ons-table__header">
                                 <span class="ons-table__header-text">Forked</span>
-                            </th>
+                            </th> #}
                             <th scope="col" class="ons-table__header">
                                 <span class="ons-table__header-text">Archive</span>
                             </th>
@@ -213,12 +212,12 @@
                                 <td class="ons-table__cell">
                                     {{ repo.description }}
                                 </td>
-                                <td class="ons-table__cell">
+                                {# <td class="ons-table__cell">
                                     {{ repo.private }}
                                 </td>
                                 <td class="ons-table__cell">
                                     {{ repo.fork }}
-                                </td>
+                                </td> #}
                                 <td class="ons-table__cell">
                                     {% if repo.archived %}
                                         <form action="/archiveRepo" method="post">
