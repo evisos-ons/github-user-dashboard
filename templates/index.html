@@ -7,6 +7,7 @@
 {% from "components/list/_macro.njk" import onsList %}
 {% from "components/label/_macro.njk" import onsLabel %}
 {% from "components/select/_macro.njk" import onsSelect %}
+{% from "components/input/_macro.njk" import onsInput %}
 {% set pageConfig = {
       "header": {
           "title": "GitHub User Dashboard",
@@ -135,5 +136,97 @@
         "url": "https://github.com/" + user_info.login + "#bio"
     }) }}
     <p id="bioText">{{ user_info.bio }}</p>
-    
+    <!-- Field selection form -->
+    {{ onsCard({
+        "id": "dynamic-edit",
+        "textId": "dynamic-edit-text",
+        "title": " Edit Details",
+        "url": "https://github.com/" + user_info.login
+    }) }}
+    <form id="editFieldForm" action="/saveField" method="post" class="ons-card">
+        {{ onsSelect({
+        "id": "fieldSelect",
+        "name": "field",
+        "label": {
+            "text": "Select the field you want to edit"
+        },
+        "options": [
+            { "value": "", "text": "Select an option", "disabled": true, "selected": true },
+            { "value": "name", "text": "Name" },
+            { "value": "email", "text": "Email" },
+            { "value": "blog", "text": "Blog URL" },
+            { "value": "twitter_username", "text": "Twitter Username" },
+            { "value": "company", "text": "Company" },
+            { "value": "location", "text": "Location" },
+            { "value": "hireable", "text": "Hiring Availability" },
+            { "value": "bio", "text": "Bio" }
+        ]
+    }) }}
+        <!-- Placeholder for dynamic input -->
+        <div id="dynamicInput" class="ons-card"></div>
+        <br>
+            {{ onsButton({
+        "text": "Submit Changes",
+        "type": "submit"
+    }) }}
+        </form>
+        <script>
+            
+            document.getElementById('fieldSelect').addEventListener('change', function () {
+                var selectedField = this.value;
+                var dynamicInput = document.getElementById('dynamicInput');
+                    var userInfo = {{ user_info | tojson | safe }};
+                    console.log(userInfo);
+                let preExistingValue = userInfo[selectedField]
+                // Clear previous input
+                dynamicInput.innerHTML = '';
+                // Use a template literal for easier HTML insertion
+                let inputHTML = '';
+                // Determine the type of input based on the selected field
+                switch (selectedField) {
+                    case 'hireable': inputHTML = `
+                {{ onsSelect({
+                    "id": "valueSelect",
+                    "name": "value",
+                    "label": {
+                        "text": "New Value"
+                    },
+                    "options": [
+                        { "value": "true", "text": "True" },
+                        { "value": "false", "text": "False" },
+                        { "value": "null", "text": "Not Set" }
+                    ]
+                }) }}
+            `;
+                        break;
+                    case 'bio': inputHTML = `
+                {{ onsTextarea({
+                    "id": "valueTextarea",
+                    "name": "value",
+                    "label": {
+                        "text": "New Bio"
+                    },
+                    "rows": 4,
+                    "cols": 50,
+                    "value": "${preExistingValue}"
+                }) }}
+            `;
+                        break;
+                    default: inputHTML = `
+                {{ onsInput({
+                    "id": "valueInput",
+                    "name": "value",
+                    "label": {
+                        "text": "New Value"
+                    },
+                    "type": "text",
+                    "value": "${preExistingValue}"
+                }) }}
+            `;
+                        break;
+                }
+                // Inject the generated HTML into the dynamic input area
+                dynamicInput.innerHTML = inputHTML;
+            });
+        </script>
     {% endblock %}

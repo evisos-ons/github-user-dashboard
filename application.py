@@ -38,5 +38,42 @@ def hello_world():
 
     return render_template("index.html", param="Hello world", user_info=user_info, followers=followers, error_message=error_message)
 
+@app.route("/saveField", methods=["POST"])
+def save_field():
+    # Retrieve the field and new value from the form data
+    field = request.form.get("field")
+    new_value = request.form.get("value")
+    github_token = os.getenv("GITHUB_TOKEN")
+    print(field, new_value, request.form)
+
+    if not github_token:
+        print("GitHub token not found in environment variables.")
+        return redirect(url_for("hello_world", error="GitHub token not found"))
+
+    headers = {"Authorization": f"token {github_token}", "Content-Type": "application/json"}
+    data = {}
+
+    # Map field names to GitHub API fields
+    if field == "twitter_username":
+        data["twitter_username"] = new_value if new_value else None
+    elif field == "hireable":
+        data["hireable"] = True if new_value == "true" else (False if new_value == "false" else None)
+    else:
+        if new_value == None:
+            return redirect(url_for("hello_world", error="Value cannot be empty"))
+        else:
+            data[field] = new_value
+
+    # Update user info on GitHub
+    response = requests.patch("https://api.github.com/user", headers=headers, json=data)
+    if response.status_code == 200:
+        return redirect(url_for("hello_world"))
+    else:
+        # Handle error
+        print(f"Failed to update {field}, status code: {response.status_code}")
+        return redirect(url_for("hello_world", error=f"Failed to update {field}"))
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
