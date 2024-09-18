@@ -23,3 +23,6 @@ run-dev: load-design-system-templates
 
 run: load-design-system-templates
 	flask --app application run
+	
+add:
+	export GITHUB_TOKEN=$(token)
