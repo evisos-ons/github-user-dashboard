@@ -1,5 +1,4 @@
 {% extends "layout/_template.njk" %}
-
 {% from "components/image/_macro.njk" import onsImage %}
 {% from "components/card/_macro.njk" import onsCard %}
 {% from "components/textarea/_macro.njk" import onsTextarea %}
@@ -8,7 +7,6 @@
 {% from "components/list/_macro.njk" import onsList %}
 {% from "components/label/_macro.njk" import onsLabel %}
 {% from "components/select/_macro.njk" import onsSelect %}
-
 {% set pageConfig = {
       "header": {
           "title": "GitHub User Dashboard",
@@ -37,7 +35,6 @@
           }
       }
   } %}
-
 {% block main %}
     {% if error_message %}
         {% call onsPanel({
@@ -54,24 +51,82 @@
         }) }}
         {% endcall %}
     {% endif %}
-    
     {{ onsImage({
         "image": {
             "smallSrc": user_info.avatar_url,
             "largeSrc": user_info.avatar_url
         }
     }) }}
-
     {{ onsCard({
         "id": 'user-info',
         "textId": 'text',
         "title": user_info.name,
         "url": "https://github.com/" + user_info.login + "#name"
     }) }}
-
-    <p>Followers: {{ user_info.followers }} | Following: {{ user_info.following }}</p>
-    <p>Public repos: {{ user_info.public_repos }}</p>
-
+    {% from "components/table/_macro.njk" import onsTable %}
+    {{ onsTable({
+        "id": "user-info-table",
+        "ths": [
+            {
+                "value": "My Details"
+            },
+            {
+                "value": ""
+            }
+        ],
+        "trs": [
+            {
+                "tds": [
+                    {
+                        "value": "Followers: " + user_info.followers | string
+                    },
+                    {
+                        "value": "Following: " + user_info.following | string
+                    }
+                ]
+            },
+            {
+                "tds": [
+                    {
+                        "value": "Public repos: " + user_info.public_repos | string
+                    },
+                    {
+                        "value": "Public gists: " + user_info.public_gists | string
+                    }
+                ]
+            },
+            {
+                "tds": [
+                    {
+                        "value": "Company: " + user_info.company | string
+                    },
+                    {
+                        "value": "Hireable: " + user_info.hireable | string
+                    }
+                ]
+            },
+            {
+                "tds": [
+                    {
+                        "value": "Blog: " + user_info.blog | string
+                    },
+                    {
+                        "value": "Location: " + user_info.location | string
+                    }
+                ]
+            },
+            {
+                "tds": [
+                    {
+                        "value": "Twitter: " + user_info.twitter_username | string,
+                    },
+                    {
+                        "value": "Admin: " + user_info.site_admin | string
+                    }
+                ]
+            }
+        ]
+    }) }}
     <!-- Bio section within a card -->
     {{ onsCard({
         "id": "bio-card",
@@ -79,6 +134,6 @@
         "title": "Your Bio",
         "url": "https://github.com/" + user_info.login + "#bio"
     }) }}
-        <p id="bioText">{{ user_info.bio }}</p>
-        
-{% endblock %}
+    <p id="bioText">{{ user_info.bio }}</p>
+    
+    {% endblock %}
