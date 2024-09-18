@@ -1,6 +1,6 @@
-# design-system-python-flask-demo
+# Dummy Project: GitHub User Dashboard
 
-This project is a demo of design system implemented in Python and Flask.
+This project is a demo of the design system implemented in Python and Flask, using the GitHub API.
 
 ## Setup
 
@@ -11,7 +11,7 @@ brew install pyenv jq
 ```
 
 Install Python and initialise the virtual environment as shown below.
-Note: The Python version is specified in the .python-version file.
+*Note: The Python version is 3.11.*
 
 ```
 pyenv install
@@ -21,24 +21,35 @@ python3 -m venv env && source env/bin/activate
 Install Poetry, a dependency management and packaging tool, as shown below.
 
 ```
-pip install -U pip setuptools
 pip install poetry
 ```
 
-All the libraries declared are available in `pyproject.toml`. To install these defined dependencies, run `poetry install`. To add a new dependency, run `poetry add <dependency_name>`.
+All the libraries declared are available in `pyproject.toml`.
 
-Install pre-commit hooks, to automatically execute code checks and formatting tools before each commit as shown below.
+To install these dependencies, run `make install`. 
 
-```
-poetry run pre-commit install
-```
-
-Install code formatter prettier and `prettier-plugin-jinja-template` plugin as shown below.
-
-```
-npm install
-```
+To install these dependencies plus linting and formatting tools, run `make install-dev`.
 
 ## Running the Application
 
-For running this application, run `make run` which first executes `scripts/load_release.sh` script that downloads the Design System macros zip file from the github release and unzips them into a templates folder. Then, `flask --app application run ` renders all the example components as displayed in the Design System at `http://127.0.0.1:5000`. The CSS and JS are pulled in at runtime from the CDN.
+To run the flask application **without** the debugger active use:
+
+```
+make run
+```
+
+To run the flask application **with** the debugger active use:
+
+```
+make run-dev
+```
+
+## Linting and Formatting
+
+If you have installed the developer dependencies, you are able to lint and format  using black, ruff and mypy.
+
+```
+make lint
+```
+
+To clean the temporary files created after running the linter, use `make clean`.

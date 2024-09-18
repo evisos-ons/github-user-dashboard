@@ -171,12 +171,10 @@
     }) }}
         </form>
         <script>
-            
             document.getElementById('fieldSelect').addEventListener('change', function () {
                 var selectedField = this.value;
                 var dynamicInput = document.getElementById('dynamicInput');
-                    var userInfo = {{ user_info | tojson | safe }};
-                    console.log(userInfo);
+                var userInfo = {{ user_info | tojson | safe }};
                 let preExistingValue = userInfo[selectedField]
                 // Clear previous input
                 dynamicInput.innerHTML = '';
@@ -208,7 +206,7 @@
                     },
                     "rows": 4,
                     "cols": 50,
-                    "value": "${preExistingValue}"
+                    "value": "${preExistingValue}" 
                 }) }}
             `;
                         break;

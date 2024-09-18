@@ -7,3 +7,6 @@ templates/components
 templates/layout
 node_modules
 .vscode
+.mypy_cache
+.ruff_cache
+.python-version
