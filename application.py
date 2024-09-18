@@ -118,10 +118,19 @@ def archive_repo():
         "Authorization": f"token {github_token}",
         "Content-Type": "application/json",
     }
-    data = {"archived": not bool(archived)}
+    # For some reason bool(archived) returns False even if it's True.
+    if archived == "False":
+        trigger = False
+    elif archived == "True":
+        trigger = True
+    else:
+        return redirect(url_for("hello_world", error=f"Failed to archive repository"))
+
+    data = {"archived": not trigger}
+    
 
     response = requests.patch(f"https://api.github.com/repos/{login}/{repo}", headers=headers, json=data)
-
+    # print(response.text)
     if response.status_code == 200:
         return redirect(url_for("hello_world"))
     else:
