@@ -17,6 +17,7 @@ def hello_world():
     github_token = os.getenv("GITHUB_TOKEN")
     user_info = {}
     followers = []
+    repos = []
     error_message = request.args.get("error")
 
     if github_token:
@@ -36,14 +37,30 @@ def hello_world():
             followers = [follower["login"] for follower in followers_data]
         else:
             followers = {"error": f"Failed to fetch followers, status code: {followers_response.status_code}"}
-    else:
-        user_info = {"error": "GitHub token not found in environment variables."}
+    
+        # Fetch followers
+        repos_response = requests.get("https://api.github.com/users/evisos-ons/repos", headers=headers)
+        if repos_response.status_code == 200:
+            repos_data = repos_response.json()
+            for repo in repos_data:
+                repo_info = {
+                    "id": repo["id"],
+                    "full_name": repo["full_name"],
+                    "private": repo["private"],
+                    "description": repo["description"],
+                    "fork": repo["fork"]
+                }
+                repos.append(repo_info)
+        else:
+            repos = {"error": f"Failed to fetch repositories, status code: {repos_response.status_code}"} 
+            user_info = {"error": "GitHub token not found in environment variables."}
 
     return render_template(
         "index.html",
         param="Hello world",
         user_info=user_info,
         followers=followers,
+        repos=repos,
         error_message=error_message,
     )
 

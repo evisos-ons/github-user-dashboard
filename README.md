@@ -1,6 +1,6 @@
-# Dummy Project: GitHub User Dashboard
+# GitHub User Dashboard - Dummy Project
 
-This project is a demo of the design system implemented in Python and Flask, using the GitHub API.
+This dummy project is to allow users to view their GitHub profile in more detail and update details. The application uses the design system implemented in Python and Flask and uses the GitHub API.
 
 ## Setup
 
@@ -37,7 +37,9 @@ Login to GitHub.
 Go to [github.com/settings](https://github.com/settings/tokens?type=beta).
 
 Generate new token and enable these **account permissions**.
+
 *Note: The token must have these scopes and access for the app to work.*
+
 | Scope          | Access        |
 | :--------      | :-------      |
 | Email addresses| Read-only     |
@@ -51,11 +53,11 @@ Once you have your token it should look something like this:
 
 You can now add this to your environment by using the command:
 
-`make add token=<your_token>`
+```make add token=<your_token>```
 
 *If that doesn't work, try this:*
 
-`export GITHUB_TOKEN=<your_token>`
+```export GITHUB_TOKEN=<your_token>```
 
 Now you can run your application.
 

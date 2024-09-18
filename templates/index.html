@@ -37,9 +37,10 @@
       }
   } %}
 {% block main %}
+    {# <p>{{ user_info }}</p> #}
     {% if error_message %}
         {% call onsPanel({
-            "title": 'There was a problem with your submission',
+            "title": 'There was a problem with your submission.',
             "variant": 'error'
         }) %}
         {{ onsList({
@@ -132,7 +133,7 @@
     {{ onsCard({
         "id": "bio-card",
         "textId": "bio-text",
-        "title": "Your Bio",
+        "title": "My Bio",
         "url": "https://github.com/" + user_info.login + "#bio"
     }) }}
     <p id="bioText">{{ user_info.bio }}</p>
@@ -163,6 +164,7 @@
         ]
     }) }}
         <!-- Placeholder for dynamic input -->
+        <br>
         <div id="dynamicInput" class="ons-card"></div>
         <br>
             {{ onsButton({
@@ -170,6 +172,52 @@
         "type": "submit"
     }) }}
         </form>
+        <br>
+        <!-- Repos table -->
+        {{ onsCard({
+            "id": "repos-card",
+            "textId": "repos-text",
+            "title": "My Repositories",
+            "url": "https://github.com/" + user_info.login + "?tab=repositories"
+        }) }}
+        <table id="basic-table" class="ons-table ons-table--">
+            <thead class="ons-table__head">
+                <tr class="ons-table__row">
+                    <th scope="col" class="ons-table__header">
+                        <span class="ons-table__header-text">Repository Name</span>
+                    </th>
+                    <th scope="col" class="ons-table__header">
+                        <span class="ons-table__header-text">Description</span>
+                    </th>
+                    <th scope="col" class="ons-table__header">
+                        <span class="ons-table__header-text">Private</span>
+                    </th>
+                    <th scope="col" class="ons-table__header">
+                        <span class="ons-table__header-text">Forked</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="ons-table__body">
+                {% for repo in repos %}
+                    <tr class="ons-table__row">
+                        <td class="ons-table__cell">
+                            <a href="https://github.com/{{repo.full_name}}" target="_blank" class="ons-external-link__text">
+                                {{ repo.full_name }}
+                            </a>
+                        </td>
+                        <td class="ons-table__cell">
+                            {{ repo.description }}
+                        </td>
+                        <td class="ons-table__cell">
+                            {{ repo.private }}
+                        </td>
+                        <td class="ons-table__cell">
+                            {{ repo.fork }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         <script>
             document.getElementById('fieldSelect').addEventListener('change', function () {
                 var selectedField = this.value;
