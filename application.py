@@ -49,7 +49,7 @@ def hello_world():
                     "private": repo["private"],
                     "description": repo["description"],
                     "fork": repo["fork"],
-                    "archived": repo["archived"]
+                    "archived": repo["archived"],
                 }
                 repos.append(repo_info)
         else:
@@ -124,10 +124,9 @@ def archive_repo():
     elif archived == "True":
         trigger = True
     else:
-        return redirect(url_for("hello_world", error=f"Failed to archive repository"))
+        return redirect(url_for("hello_world", error="Failed to archive repository"))
 
     data = {"archived": not trigger}
-    
 
     response = requests.patch(f"https://api.github.com/repos/{login}/{repo}", headers=headers, json=data)
     # print(response.text)
@@ -136,8 +135,7 @@ def archive_repo():
     else:
         # Handle error
         print(f"Failed to update archive, status code: {response.status_code}")
-        return redirect(url_for("hello_world", error=f"Failed to archive repository"))
-
+        return redirect(url_for("hello_world", error="Failed to archive repository"))
 
 
 if __name__ == "__main__":

@@ -110,7 +110,7 @@
             {
                 "tds": [
                     {
-                        "value": "Blog: " + user_info.blog | string
+                        "value": "Website: " + user_info.blog | string
                     },
                     {
                         "value": "Location: " + user_info.location | string
@@ -154,7 +154,7 @@
         "options": [
             { "value": "", "text": "Select an option", "disabled": true, "selected": true },
             { "value": "name", "text": "Name" },
-            { "value": "blog", "text": "Blog URL" },
+            { "value": "blog", "text": "Website" },
             { "value": "twitter_username", "text": "Twitter Username" },
             { "value": "company", "text": "Company" },
             { "value": "location", "text": "Location" },
@@ -191,11 +191,11 @@
                                 <span class="ons-table__header-text">Description</span>
                             </th>
                             {# <th scope="col" class="ons-table__header">
-                                <span class="ons-table__header-text">Private</span>
-                            </th>
-                            <th scope="col" class="ons-table__header">
-                                <span class="ons-table__header-text">Forked</span>
-                            </th> #}
+                                                            <span class="ons-table__header-text">Private</span>
+                                                        </th>
+                                                        <th scope="col" class="ons-table__header">
+                                                            <span class="ons-table__header-text">Forked</span>
+                                                        </th> #}
                             <th scope="col" class="ons-table__header">
                                 <span class="ons-table__header-text">Archive</span>
                             </th>
@@ -213,56 +213,54 @@
                                     {{ repo.description }}
                                 </td>
                                 {# <td class="ons-table__cell">
-                                    {{ repo.private }}
-                                </td>
-                                <td class="ons-table__cell">
-                                    {{ repo.fork }}
-                                </td> #}
+                                                                    {{ repo.private }}
+                                                                </td>
+                                                                <td class="ons-table__cell">
+                                                                    {{ repo.fork }}
+                                                                </td> #}
                                 <td class="ons-table__cell">
                                     {% if repo.archived %}
                                         <form action="/archiveRepo" method="post">
                                             <input type="hidden" name="repoName" value="{{ repo.name }}">
-                                            <input type="hidden" name="userName" value="{{ user_info.login }}">
-                                            {{ onsButton({
+                                                <input type="hidden" name="userName" value="{{ user_info.login }}">
+                                                    {{ onsButton({
                                                 "text": "Unarchive",
                                                 "type": "submit"
                                             }) }}
-                                            <input type="hidden" name="archived" value="{{repo.archived}}">
-                                        </form>
-                                    {% else %}
-                                        <form action="/archiveRepo" method="post">
-                                            <input type="hidden" name="repoName" value="{{ repo.name }}">
-                                            <input type="hidden" name="userName" value="{{ user_info.login }}">
-                                            {{ onsButton({
+                                                    <input type="hidden" name="archived" value="{{ repo.archived }}"></form>
+                                                {% else %}
+                                                    <form action="/archiveRepo" method="post">
+                                                        <input type="hidden" name="repoName" value="{{ repo.name }}">
+                                                            <input type="hidden" name="userName" value="{{ user_info.login }}">
+                                                                {{ onsButton({
                                                 "text": "Archive",
                                                 "type": "submit"
                                             }) }}
-                                            <input type="hidden" name="archived" value="{{repo.archived}}">
-                                        </form>
-                                    {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        <script>
-                            document.getElementById('fieldSelect').addEventListener('change', function () {
-                                var selectedField = this.value;
-                                var dynamicInput = document.getElementById('dynamicInput');
-                                var userInfo = {{ user_info | tojson | safe }};
-                                let preExistingValue = userInfo[selectedField]
-                                // Clear previous input
-                                dynamicInput.innerHTML = '';
-                                var submitButton = document.getElementById('submitButton');
-                                let inputHTML = '';
-                                if (selectedField) {
-                                    submitButton.style.display = 'block';
-                                } else {
-                                    submitButton.style.display = 'none';
-                                }
-                                // Determine the type of input based on the selected field
-                                switch (selectedField) {
-                                    case 'hireable': inputHTML = `
+                                                                <input type="hidden" name="archived" value="{{ repo.archived }}"></form>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <script>
+                                            document.getElementById('fieldSelect').addEventListener('change', function () {
+                                                var selectedField = this.value;
+                                                var dynamicInput = document.getElementById('dynamicInput');
+                                                var userInfo = {{ user_info | tojson | safe }};
+                                                let preExistingValue = userInfo[selectedField]
+                                                // Clear previous input
+                                                dynamicInput.innerHTML = '';
+                                                var submitButton = document.getElementById('submitButton');
+                                                let inputHTML = '';
+                                                if (selectedField) {
+                                                    submitButton.style.display = 'block';
+                                                } else {
+                                                    submitButton.style.display = 'none';
+                                                }
+                                                // Determine the type of input based on the selected field
+                                                switch (selectedField) {
+                                                    case 'hireable': inputHTML = `
                 {{ onsSelect({
                     "id": "valueSelect",
                     "name": "value",
@@ -276,8 +274,8 @@
                     ]
                 }) }}
             `;
-                                        break;
-                                    case 'bio': inputHTML = `
+                                                        break;
+                                                    case 'bio': inputHTML = `
                 {{ onsTextarea({
                     "id": "valueTextarea",
                     "name": "value",
@@ -289,8 +287,8 @@
                     "value": "${preExistingValue}" 
                 }) }}
             `;
-                                        break;
-                                    default: inputHTML = `
+                                                        break;
+                                                    default: inputHTML = `
                 {{ onsInput({
                     "id": "valueInput",
                     "name": "value",
@@ -301,11 +299,13 @@
                     "value": "${preExistingValue}"
                 }) }}
             `;
-                                        break;
-                                }
-                                // Inject the generated HTML into the dynamic input area
-                                dynamicInput.innerHTML = inputHTML;
-                            });
-                        </script>
-                    {% endblock %}
-                </tbody>
+                                                        break;
+                                                }
+                                                // Inject the generated HTML into the dynamic input area
+                                                dynamicInput.innerHTML = inputHTML;
+                                            });
+                                        </script>
+                                    {% endblock %}
+                                </tbody>
+                            </td>
+                        </tr>

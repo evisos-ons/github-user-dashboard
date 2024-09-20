@@ -6,6 +6,7 @@ load-design-system-templates:
 clean:
 	rm -rf .mypy_cache
 	rm -rf .ruff_cache
+	rm -rf __pycache__
 
 lint: 
 	poetry run black . || true
