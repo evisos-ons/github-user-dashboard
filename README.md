@@ -2,6 +2,8 @@
 
 This dummy project is to allow users to view their GitHub profile in more detail and update details. The application uses the design system implemented in Python and Flask and uses the GitHub API.
 
+See documentation [here](https://evisos-ons.github.io/github-user-dashboard/).
+
 ## Setup
 
 For setting up this project, run the below command. pyenv is a Python version management tool that allows switching between multiple Python versions. jq is a JSON preprocessor that is used to fetch the design system's templates using `scripts/load_release.sh`.
